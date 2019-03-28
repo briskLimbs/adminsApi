@@ -14,8 +14,7 @@ $app->get('/versions/{version}', function ($request, $response, $args) {
   displayMessage("Single version " . $args['version']);
 });
 
-$app->get('/addons', function ($request, $response, $args) {
-	pr($request);
+$app->get('/addons[/{params:.*}]', function ($request, $response, $args) {
   displayMessage("All addons etc");
 });
 
@@ -28,7 +27,6 @@ $app->get('/addons/search/{keyword}', function ($request, $response, $args) {
 });
 
 $app->get('/skins', function ($request, $response, $args) {
-	pr($request);
   displayMessage("All skins etc");
 });
 
