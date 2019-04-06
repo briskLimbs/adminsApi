@@ -4,7 +4,10 @@ require 'vendor/autoload.php';
 require 'functions.php';
 require 'database.php';
 
-$app = new Slim\App();
+use Psr\Http\Message\ResponseInterface;
+
+global $database;
+$app = new Slim\App(['database' => $database]);
 
 $app->get('/versions', function ($request, $response, $args) {
   displayMessage("All versions etc");
@@ -14,7 +17,7 @@ $app->get('/versions/{version}', function ($request, $response, $args) {
   displayMessage("Single version " . $args['version']);
 });
 
-$app->get('/addons[/{params:.*}]', function ($request, $response, $args) {
+$app->get('/addons', function ($request, $response, $args) {
   displayMessage("All addons etc");
 });
 
@@ -38,8 +41,9 @@ $app->get('/skins/search/{keyword}', function ($request, $response, $args) {
   displayMessage("Search skin " . $args['keyword']);
 });
 
-$app->get('/news', function ($request, $response, $args) {
-  displayMessage("Get news ");
+$app->get('/news', function ($request, $response) {
+  $news = $this->database->get('news', 10);
+	return $response->withJson($news);
 });
 
 
