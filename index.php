@@ -3,9 +3,9 @@
 require 'vendor/autoload.php';
 require 'functions.php';
 require 'database.php';
+require 'model/Addons.php';
 
 use Psr\Http\Message\ResponseInterface;
-
 global $database;
 $app = new Slim\App(['database' => $database]);
 
@@ -26,7 +26,18 @@ $app->get('/addons/{name}', function ($request, $response, $args) {
 });
 
 $app->get('/addons/search/{keyword}', function ($request, $response, $args) {
-  displayMessage("Search addon " . $args['keyword']);
+  $keyword = $args['keyword'];
+  if (empty($keyword) || strlen($keyword) < 3) {
+  	return $response->withJson(array('error' => 'Invalid keyword length'), 400);
+  }
+
+  $addons = new Addons($this->database);
+  return $response->withJson(
+  	array(
+  		'status' => 'success',
+  		'data' => $addons->list()
+  	)
+  , 200);
 });
 
 $app->get('/skins', function ($request, $response, $args) {
