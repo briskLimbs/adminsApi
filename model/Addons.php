@@ -5,6 +5,7 @@ class Addons {
 	function __construct($database) {
 		$this->database = $database;
 		$this->table = 'addons';
+		$this->defaultLimit = 2;
 	}
 
 	public function list($parameters = false) {
@@ -27,7 +28,7 @@ class Addons {
 		if (isset($parameters['keyword'])) {
 			$keyword = str_replace(array('?'), '', $parameters['keyword']);
       $keyword = mysqli_real_escape_string($this->database->mysqli(), $keyword);
-			$this->database->where("MATCH (name, description) AGAINST ('$keyword' in boolean mode)");
+			$this->database->where("MATCH (name, description, author) AGAINST ('$keyword' in boolean mode)");
 		}
 
 		$limit = isset($parameters['limit']) ? $parameters['limit'] : $this->defaultLimit;

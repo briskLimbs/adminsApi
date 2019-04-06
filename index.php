@@ -25,8 +25,9 @@ $app->get('/addons/{name}', function ($request, $response, $args) {
   displayMessage("Single addon " . $args['name']);
 });
 
-$app->get('/addons/search/{keyword}', function ($request, $response, $args) {
+$app->get('/addons/search/{keyword}[/{page:.*}]', function ($request, $response, $args) {
   $keyword = $args['keyword'];
+  $page = isset($args['page']) ? $args['page'] : 1;
   if (empty($keyword) || strlen($keyword) < 3) {
   	return $response->withJson(array('error' => 'Invalid keyword length'), 400);
   }
@@ -35,7 +36,12 @@ $app->get('/addons/search/{keyword}', function ($request, $response, $args) {
   return $response->withJson(
   	array(
   		'status' => 'success',
-  		'data' => $addons->list()
+  		'data' => $addons->list(
+  			array(
+  				'keyword' => $keyword,
+  				'limit' => $addons->defaultLimit
+  			)
+  		)
   	)
   , 200);
 });
